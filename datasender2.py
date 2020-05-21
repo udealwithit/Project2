@@ -2,6 +2,7 @@ from __future__ import print_function
 import sys
 import ssl
 import time
+import json
 import datetime
 import logging, traceback
 import paho.mqtt.client as mqtt
@@ -47,12 +48,19 @@ if __name__ == '__main__':
         logger.info("connect success")
         mqttc.loop_start()
 
+        data = {
+                    "country": "USA",
+                    "State": "NY",
+                    "City": "New York",
+                    "air-quality": 3.8
+                }
+        data_out = json.dumps(data)
         count = 0
         while True:
             now = datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
             count += 1
             logger.info("try to publish:{}".format(count))
-            mqttc.publish(topic, count)
+            mqttc.publish(topic, data_out)
             time.sleep(1)
 
     except Exception as e:
