@@ -15,8 +15,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
+from rest_framework.urlpatterns import format_suffix_patterns
+from restserver import views
 
 urlpatterns = [
 	path('home/', include('firstapp.urls')),
     path('admin/', admin.site.urls),
+    path('quality/', views.AirQView.as_view())
 ]
