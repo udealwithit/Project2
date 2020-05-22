@@ -38,7 +38,7 @@ try:
 		data = row.to_json()
 		logger.info("Publishing data: " + data)
 		mqttc.publish(topic, data)
-		time.sleep(30)
+		time.sleep(5)
 	
 except Exception as e:
 	logger.error("exception main()")
