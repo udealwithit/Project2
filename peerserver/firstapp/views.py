@@ -2,11 +2,16 @@ from django.shortcuts import render
 import socket
 from restserver.models import AirQData
 from django.http import JsonResponse
+from firstapp.forms import AreaForm
+import requests
+import json
 # Create your views here.
 
 def index(request):
+	form = AreaForm(initial = {'current_area':('Area'+socket.gethostname())})
 	context = {
 				'peer_num': socket.gethostname(),
+				'form': form,
 				'time': [0],
 				'no2mean': [0],
 				'comean': [0],
@@ -17,7 +22,6 @@ def index(request):
 				'so2aqi': [0],
 				'o3aqi': [0]
 			}
-
 	return render(request, "firstapp/index.html", context)
 
 def update_chart(request):
@@ -55,3 +59,11 @@ def update_chart(request):
 		'o3aqi': o3aqi
 	}
 	return JsonResponse(context)
+
+def update_area(request):
+	response = requests.get('http://13.82.17.205:8443/getpeers/', params={'acode':request.GET['current_area']})
+	content = json.loads(response.content)	
+	if(content['query_status'] == 'success'):
+		return JsonResponse({'iplist':content['iplist']})
+	else:	
+		return JsonResponse({'status':'failed'})	
