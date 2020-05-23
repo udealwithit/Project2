@@ -16,7 +16,7 @@ def chart(request):
 	return render(request, "firstapp/chart.html", context)
 
 def update_chart(request):
-	temp =	AirQData.objects.all()[:10]
+	temp =	AirQData.objects.all()[-10:]
 	time = []
 	aqualities = []
 
