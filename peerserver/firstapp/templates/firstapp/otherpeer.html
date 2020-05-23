@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Air Quality Monitoring</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+</head>
+
+<body>
+	<nav class="navbar navbar-default">
+    	<div class="container-fluid">
+        	<div class="navbar-header">
+      			<a class="navbar-brand" href="#">Air Quality Monitor</a>
+    		</div>
+        	<ul class="nav navbar-nav">
+            	<li class="active"><a href="#">Home</a></li>
+      			<li><a href="#">Future Prediction</a></li>
+    		</ul>
+ 		 </div>
+	</nav>
+     
+    <div style="margin-left:2em">  
+		  <h3>You've connected to peer {{peer_num}}</h3>
+      <h3>Getting data from peer {{peerip}}</h3>
+    </div>
+    <div style="margin-left:2em">
+      <p>Choose your city</p>
+		<form action="/home/update_area" method="get">
+		{{form}}
+		<input type="submit" value="Submit">
+		</form>
+	</div>
+  <div id="NO2Container1" style="width: 45%; height: 300px;display: inline-block;">
+    <canvas id="NO2Chart" style="width: 100%; height: 100%"></canvas>
+  </div>
+  <div id="COContainer2" style="width: 45%; height: 300px;display: inline-block;">
+    <canvas id="COChart" style="width: 100%; height: 100%"></canvas>
+  </div>
+  <div id="SO2Container3" style="width: 45%; height: 300px;display: inline-block;">
+    <canvas id="SO2Chart" style="width: 100%; height: 100%"></canvas>
+  </div>
+  <div id="O3Container4" style="width: 45%; height: 300px;display: inline-block;">
+    <canvas id="O3Chart" style="width: 100%; height: 100%"></canvas>
+  </div>
+
+  <script>
+    var no2 = document.getElementById('NO2Chart').getContext('2d');
+    var co = document.getElementById('COChart').getContext('2d');
+    var so2 = document.getElementById('SO2Chart').getContext('2d');
+    var o3 = document.getElementById('O3Chart').getContext('2d');
+
+    var NO2_Chart = new Chart(no2, {
+        type: 'line',
+        data: {
+            labels: {{time}},
+            datasets: [
+              {
+                label: 'NO2 Mean',
+                data : {{no2mean}},
+                backgroundColor:['rgba(54, 162, 235, 0.2)'],
+                borderColor: ['rgba(54, 162, 235, 1)'],
+                borderWidth: 1,
+                fill: false
+              },
+
+              {
+                label: 'NO2 AQI',
+                data : {{no2aqi}},
+                backgroundColor:['rgba(54, 162, 235, 0.2)'],
+                borderColor: ['rgba(54, 162, 235, 1)'],
+                borderWidth: 1,
+                fill: false
+              }
+            ]
+        },
+        options: {
+        scales: { yAxes: [{ ticks: { beginAtZero: false }}] },
+        responsive: false,
+      }
+    });
+
+    var CO_Chart = new Chart(co, {
+        type: 'line',
+        data: {
+            labels: {{time}},
+            datasets: [
+              {
+                label: 'CO Mean',
+                data : {{comean}},
+                backgroundColor:['rgba(49, 42, 56, 0.2)'],
+                borderColor: ['rgba(49, 42, 56, 1)'],
+                borderWidth: 1,
+                fill: false
+              },
+
+              {
+                label: 'CO AQI',
+                data : {{coaqi}},
+                backgroundColor:['rgba(54, 162, 235, 0.2)'],
+                borderColor: ['rgba(54, 162, 235, 1)'],
+                borderWidth: 1,
+                fill: false
+              }
+            ]
+        },
+        options: {
+        scales: { yAxes: [{ ticks: { beginAtZero: false }}] },
+        responsive: false
+      }
+    });
+
+    var SO2_Chart = new Chart(so2, {
+        type: 'line',
+        data: {
+            labels: {{time}},
+            datasets: [
+              {
+                label: 'SO2 Mean',
+                data : {{so2mean}},
+                backgroundColor:['rgba(245, 145, 48, 0.2)'],
+                borderColor: ['rgba(245, 145, 48, 1)'],
+                borderWidth: 1,
+                fill: false
+              },
+
+              {
+                label: 'SO2 AQI',
+                data : {{so2aqi}},
+                backgroundColor:['rgba(54, 162, 235, 0.2)'],
+                borderColor: ['rgba(54, 162, 235, 1)'],
+                borderWidth: 1,
+                fill: false
+              }
+            ]
+        },
+        options: {
+        scales: { yAxes: [{ ticks: { beginAtZero: false }}] },
+        responsive: false
+      }
+    });
+
+    var O3_Chart = new Chart(o3, {
+        type: 'line',
+        data: {
+            labels: {{time}},
+            datasets: [
+              {
+                label: 'O3 Mean',
+                data : {{o3mean}},
+                backgroundColor:['rgba(49, 214, 56, 0.2)'],
+                borderColor: ['rgba(49, 214, 56, 1)'],
+                borderWidth: 1,
+                fill: false
+              },
+
+              {
+                label: 'O3 AQI',
+                data : {{o3aqi}},
+                backgroundColor:['rgba(54, 162, 235, 0.2)'],
+                borderColor: ['rgba(54, 162, 235, 1)'],
+                borderWidth: 1,
+                fill: false
+              }
+            ]
+        },
+        options: {
+        scales: { yAxes: [{ ticks: { beginAtZero: false }}] },
+        responsive: false
+      }
+    });
+
+    setInterval(function(){
+      $.ajax({
+        url:'/home/update_from_peer',
+        data: { peer: '{{peerip}}' },
+        success: function(test){
+          NO2_Chart.data.datasets[0].data = test.no2mean;
+          NO2_Chart.data.datasets[1].data = test.no2aqi;
+          NO2_Chart.data.labels = test.time;
+          NO2_Chart.update();
+
+          CO_Chart.data.datasets[0].data = test.comean;
+          CO_Chart.data.datasets[1].data = test.coaqi;
+          CO_Chart.data.labels = test.time;
+          CO_Chart.update();
+
+          SO2_Chart.data.datasets[0].data = test.so2mean;
+          SO2_Chart.data.datasets[1].data = test.so2aqi;
+          SO2_Chart.data.labels = test.time;
+          SO2_Chart.update();
+
+          O3_Chart.data.datasets[0].data = test.o3mean;
+          O3_Chart.data.datasets[1].data = test.o3aqi;
+          O3_Chart.data.labels = test.time;
+          O3_Chart.update();
+        }
+      });
+    }, 5000);
+  </script>
+</body>
+</html>

@@ -12,7 +12,7 @@ import json
 class AirQView(APIView):
 
 	def get(self, request):
-		airq = AirQData.objects.all()
+		airq = AirQData.objects.all().order_by('-id')[:10][::-1]
 		serializer = AirQDataSerializer(airq, many=True)
 		return Response(serializer.data)
 

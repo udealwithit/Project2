@@ -61,9 +61,69 @@ def update_chart(request):
 	return JsonResponse(context)
 
 def update_area(request):
+	if(request.GET['current_area'] == 'Area1'):
+		return index(request)
+
 	response = requests.get('http://13.82.17.205:8443/getpeers/', params={'acode':request.GET['current_area']})
 	content = json.loads(response.content)	
 	if(content['query_status'] == 'success'):
-		return JsonResponse({'iplist':content['iplist']})
+		otherIP = content['iplist'][0]['ip']
+		form = AreaForm(initial = {'current_area':('Area'+socket.gethostname())})
+		context = {
+					'peer_num': socket.gethostname(),
+					'form': form,
+					'time': [0],
+					'no2mean': [0],
+					'comean': [0],
+					'so2mean': [0],
+					'o3mean': [0],
+					'no2aqi': [0],
+					'coaqi' : [0],
+					'so2aqi': [0],
+					'o3aqi': [0],
+					'peerip': otherIP
+					}
+		return render(request, "firstapp/otherpeer.html", context)
 	else:	
 		return JsonResponse({'status':'failed'})	
+
+
+def update_chart_from_peer(request):
+	peerip = request.GET['peer']
+	url = 'http://'+ peerip + ":8443/quality"
+	resp = requests.get(url)
+	data = resp.json()
+	
+	time = []
+	no2mean = []
+	comean = []
+	so2mean = []
+	o3mean = []
+	no2aqi = []
+	coaqi = []
+	so2aqi = []
+	o3aqi = []
+
+	for i, d in enumerate(data):
+		time.append(i)
+		no2mean.append(d['NO2_Mean'])
+		comean.append(d['CO_Mean'])
+		so2mean.append(d['SO2_Mean'])
+		o3mean.append(d['O3_Mean'])
+		no2aqi.append(d['NO2_AQI'])
+		coaqi.append(d['CO_AQI'])
+		so2aqi.append(d['SO2_AQI'])
+		o3aqi.append(d['O3_AQI'])
+
+	context = {
+		'time': time,
+		'no2mean': no2mean,
+		'comean': comean,
+		'so2mean': so2mean,
+		'o3mean': o3mean,
+		'no2aqi': no2aqi,
+		'coaqi': coaqi,
+		'so2aqi': so2aqi,
+		'o3aqi': o3aqi
+	}
+	return JsonResponse(context)
