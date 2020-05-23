@@ -5,18 +5,16 @@ from django.http import JsonResponse
 # Create your views here.
 
 def index(request):
-	context = {'peer_num': socket.gethostname()}
+	context = {
+				'peer_num': socket.gethostname(),
+				'time': [0],
+				'aqualities': [0]
+				}
+
 	return render(request, "firstapp/index.html", context)
 
-def chart(request):
-	context = {
-		'time': [0],
-		'aqualities': [0],
-	}
-	return render(request, "firstapp/chart.html", context)
-
 def update_chart(request):
-	temp =	AirQData.objects.all()[-10:]
+	temp =	AirQData.objects.all().order_by('-id')[:10][::-1]
 	time = []
 	aqualities = []
 
@@ -26,7 +24,6 @@ def update_chart(request):
 
 	time = time[:10]
 	aqualities = aqualities[:10]
-	aqualities.reverse()
 
 	context = {
 		'time': time,
