@@ -8,7 +8,7 @@ import json
 # Create your views here.
 
 def index(request):
-	form = AreaForm(initial = {'current_area':('Area'+socket.gethostname())})
+	form = AreaForm(initial = {'current_area':socket.gethostname().capitalize()})
 	context = {
 				'peer_num': socket.gethostname(),
 				'form': form,
@@ -68,7 +68,7 @@ def update_area(request):
 	content = json.loads(response.content)	
 	if(content['query_status'] == 'success'):
 		otherIP = content['iplist'][0]['ip']
-		form = AreaForm(initial = {'current_area':('Area'+socket.gethostname())})
+		form = AreaForm(initial = {'current_area': request.GET['current_area']})
 		context = {
 					'peer_num': socket.gethostname(),
 					'form': form,
