@@ -1,0 +1,9 @@
+MODEL_NAME="area1model"
+VERSION_NAME='v1'
+REGION="us-east1"
+BUCKET_NAME="airpollutionmodelbucket"
+
+gcloud ai-platform models create $MODEL_NAME   --regions $REGION
+
+gcloud beta ai-platform versions create $VERSION_NAME --model $MODEL_NAME --runtime-version 1.15 --python-version 3.7 --origin gs://$BUCKET_NAME/area1data/model/ --package-uris gs://$BUCKET_NAME/area1data/area1_DL_code-0.1.tar.gz --prediction-class predictor.MyPredictor
+
