@@ -127,3 +127,12 @@ def update_chart_from_peer(request):
 		'o3aqi': o3aqi
 	}
 	return JsonResponse(context)
+
+def predict(request):
+	temp =	AirQData.objects.all().order_by('-id')[:1]
+	url = ""
+	#resp = requests.get(url)
+	#data = resp.json()
+
+	context = {"demo":"Hi"}
+	return render(request, 'firstapp/predict.html', context)

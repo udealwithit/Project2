@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Air Quality Monitoring</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+</head>
+
+<body>
+	<nav class="navbar navbar-default">
+    	<div class="container-fluid">
+        	<div class="navbar-header">
+      			<a class="navbar-brand" href="#">Air Quality Monitor</a>
+    		</div>
+        	<ul class="nav navbar-nav">
+            	<li><a href="/home/index">Home</a></li>
+      			<li class="active"><a href="/home/predict">Future Prediction</a></li>
+    		</ul>
+ 		 </div>
+	</nav>
+
+    <p>You're future prediction for air pollution is as follows</p>
+    <div>
+        {{demo}}
+    </div>
+</body>
+</html>
