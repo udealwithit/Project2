@@ -130,9 +130,12 @@ def update_chart_from_peer(request):
 
 def predict(request):
 	temp =	AirQData.objects.all().order_by('-id')[:1]
-	url = ""
-	#resp = requests.get(url)
-	#data = resp.json()
+	temp = list(temp.values())
+	url = "http://40.117.101.88:8000/predict/"
+	temp_data = temp[0]
 
-	context = {"demo":"Hi"}
+	resp = requests.post(url, data=temp_data)
+	data = resp.json()
+
+	context = {"demo":[data]}
 	return render(request, 'firstapp/predict.html', context)
