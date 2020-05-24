@@ -34,7 +34,11 @@ class MLPrediction(APIView):
 		instance.append(airData['CO_Mean'])
 		instance.append(airData['CO_1st_Max_Value'])
 		instance.append(airData['CO_AQI'])
-	
-		output = predictionModel.predict(instance)
+		
+		result = []
+		for i in range(10):
+			output = predictionModel.predict(instance)
+			result.append(output.copy())
+			instance = output
 
-		return JsonResponse(output, safe=False)
+		return JsonResponse(result, safe=False)

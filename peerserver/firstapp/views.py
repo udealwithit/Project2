@@ -137,5 +137,5 @@ def predict(request):
 	resp = requests.post(url, data=temp_data)
 	data = resp.json()
 
-	context = {"demo":[data]}
+	context = {"demo":data}
 	return render(request, 'firstapp/predict.html', context)
